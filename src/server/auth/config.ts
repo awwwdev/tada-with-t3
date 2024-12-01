@@ -4,10 +4,10 @@ import DiscordProvider from "next-auth/providers/discord";
 
 import { db } from "~/server/db";
 import {
-  accounts,
-  sessions,
-  users,
-  verificationTokens,
+  ACCOUNT,
+  SESSION,
+  USER,
+  VERIFICATION_TOKEN,
 } from "~/server/db/schema";
 
 /**
@@ -50,18 +50,17 @@ export const authConfig = {
      */
   ],
   adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }),
-  callbacks: {
+    usersTable: USER,
+    accountsTable: ACCOUNT,
+    sessionsTable: SESSION,
+    verificationTokensTable: VERIFICATION_TOKEN,
+  }), callbacks: {
     session: ({ session, user }) => ({
       ...session,
       user: {
         ...session.user,
         id: user.id,
-      },
+      }, ACCOUNT
     }),
   },
 } satisfies NextAuthConfig;

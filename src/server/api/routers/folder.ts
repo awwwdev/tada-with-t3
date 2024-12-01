@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -5,9 +6,31 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { posts } from "~/server/db/schema";
+import { FOLDER } from "~/server/db/schema";
 
 export const postRouter = createTRPCRouter({
+  getFolders: protectedProcedure.
+  input(z.object({}))
+  .use(async (options) => options.next({ ctx: options.ctx })) 
+  .query(async ({ ctx }) => {
+    const folders = await ctx.db.query.FOLDER.findMany({
+      where: eq(FOLDER.authorId, ctx.session.user.id),
+      orderBy: (folders, { desc }) => [desc(folders.createdAt)],
+    });
+    return folders;
+  }),
+  getFolder: protectedProcedure.
+  input(z.object({ id: z.string() }))
+  .use(async (options) => options.next({ ctx: options.ctx })) 
+  .query(async ({ input, ctx }) => {
+    const folder = await ctx.db.query.FOLDER.findOne({
+      where: eq(FOLDER.id, input.id),
+      include: {
+        author: true,
+      },
+    });
+    return folder;
+  }),
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
