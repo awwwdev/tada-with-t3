@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { subject } from "@casl/ability";
 
 import {
   createTRPCRouter,
@@ -7,30 +8,51 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { FOLDER } from "~/server/db/schema";
+import { Folder } from "~/server/db/folder.schema";
+import { accessControl } from "~/access-control/access-control-middleware";
+import { singleOrThrowItem } from "~/server/db/utils";
+
+let cache: {
+  folder: Folder | null;
+} = {
+  folder: null,
+};
+
 
 export const postRouter = createTRPCRouter({
-  getFolders: protectedProcedure.
-  input(z.object({}))
-  .use(async (options) => options.next({ ctx: options.ctx })) 
-  .query(async ({ ctx }) => {
-    const folders = await ctx.db.query.FOLDER.findMany({
-      where: eq(FOLDER.authorId, ctx.session.user.id),
-      orderBy: (folders, { desc }) => [desc(folders.createdAt)],
-    });
-    return folders;
-  }),
-  getFolder: protectedProcedure.
-  input(z.object({ id: z.string() }))
-  .use(async (options) => options.next({ ctx: options.ctx })) 
-  .query(async ({ input, ctx }) => {
-    const folder = await ctx.db.query.FOLDER.findOne({
-      where: eq(FOLDER.id, input.id),
-      include: {
-        author: true,
-      },
-    });
-    return folder;
-  }),
+  getFolders: protectedProcedure
+    .input(z.object({}))
+    .use((opt) => opt.next())
+    .query(async ({ ctx }) => {
+      const folders = await ctx.db.query.FOLDER.findMany({
+        where: eq(FOLDER.authorId, ctx.session.user.id),
+        orderBy: (folders, { desc }) => [desc(folders.createdAt)],
+      });
+      return folders;
+    }),
+  getFolder: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .use(
+      accessControl(async (option, userAbility) => {
+        const folder = await option.ctx.db.query.FOLDER.findFirst({
+          where: eq(FOLDER.id, option.input.id),
+          with: {
+            author: true,
+          },
+        }).then(singleOrThrowItem);
+        cache.folder = folder;
+        return userAbility.can("read", subject("FOLDER", folder));
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      return cache.folder;
+      // const folder = await ctx.db.query.FOLDER.findFirst({
+      //   where: eq(FOLDER.id, input.id),
+      //   with: {
+      //     author: true,
+      //   },
+      // }).then(singleOrThrow);
+    }),
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
