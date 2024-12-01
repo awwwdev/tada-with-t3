@@ -8,9 +8,10 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { FOLDER } from "~/server/db/schema";
-import { Folder } from "~/server/db/folder.schema";
+import { Folder, folderCreateSchema, folderUpdateSchema } from "~/server/db/folder.schema";
 import { accessControl } from "~/access-control/access-control-middleware";
-import { singleOrThrowItem } from "~/server/db/utils";
+import { singleOrThrow, singleOrThrowItem } from "~/server/db/utils";
+import { TRPCError } from "@trpc/server";
 
 let cache: {
   folder: Folder | null;
@@ -39,46 +40,46 @@ export const postRouter = createTRPCRouter({
           with: {
             author: true,
           },
-        }).then(singleOrThrowItem);
+        }).then(singleOrThrow);
         cache.folder = folder;
         return userAbility.can("read", subject("FOLDER", folder));
       }),
     )
-    .query(async ({ input, ctx }) => {
-      return cache.folder;
-      // const folder = await ctx.db.query.FOLDER.findFirst({
-      //   where: eq(FOLDER.id, input.id),
-      //   with: {
-      //     author: true,
-      //   },
-      // }).then(singleOrThrow);
-    }),
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+    .query(async ({ input, ctx }) => cache.folder),
 
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
 
+
+  createFolder: protectedProcedure
+    .input(folderCreateSchema)
+    .use(accessControl(
+      async ({ ctx }, userAbility) => userAbility.can('create', subject('FOLDER', ctx.session.user))
+    ))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(posts).values({
-        name: input.name,
-        createdById: ctx.session.user.id,
-      });
+      const folder = await ctx.db.insert(FOLDER).values(input).returning().then(singleOrThrow);
+      return folder;
     }),
 
-  getLatest: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.query.posts.findFirst({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-    });
-    return post ?? null;
+  updateFolder: protectedProcedure.input(folderUpdateSchema).use(accessControl(
+    async (options, userAbility) => {
+      const { id } = options.input
+      const folder = await options.ctx.db.select().from(FOLDER).where(eq(FOLDER.id, id)).then(singleOrThrow);
+      return userAbility.can('update', subject('FOLDER', folder))
+    }
+  )).mutation(async ({ ctx, input }) => {
+    const folder = await ctx.db.update(FOLDER).set(input).where(eq(FOLDER.id, input.id)).returning().then(singleOrThrow);
+    if (!folder) throw new TRPCError({ code: "NOT_FOUND" });
+    return folder;
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+  deleteFolder: protectedProcedure.input(folderCreateSchema).use(accessControl(
+    async (options, userAbility) => {
+      const { id } = options.input
+      const folder = await options.ctx.db.select().from(FOLDER).where(eq(FOLDER.id, id)).then(singleOrThrow);
+      return userAbility.can('delete', subject('FOLDER', folder))
+    }
+  )).mutation(async ({ ctx, input }) => {
+    const folder = await ctx.db.delete(FOLDER).where(eq(FOLDER.id, input.id)).returning().then(singleOrThrow);
+    if (!folder) throw new TRPCError({ code: "NOT_FOUND" });  
+    return folder;
   }),
 });
