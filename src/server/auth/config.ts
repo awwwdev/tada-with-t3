@@ -9,6 +9,7 @@ import {
   USER,
   VERIFICATION_TOKEN,
 } from "~/server/db/schema";
+import { User } from "../db/user.schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -22,7 +23,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
-    } & DefaultSession["user"];
+    } & DefaultSession["user"] & User;
   }
 
   // interface User {
