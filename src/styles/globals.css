@@ -1,3 +1,328 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+html,
+body {
+  font-family: var(--font-content);
+}
+
+* {
+  scroll-behavior: smooth;
+  scroll-margin: 4em;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline-offset: 4px;
+  outline-style: solid;
+  outline-color: #11cfff95 !important;
+}
+:root {
+  --max-w-page: min(100vw - 32px, 50rem);
+  --line-height: 1.5em;
+  line-height: 1.5;
+
+  --font-display: nohemi, geist, inter, "sans-serif", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  --font-content: geist, "Roboto", "sans-serif", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  --font-mono: SpaceMono, "JetBrainsMono", "Roboto", IRANSans, "sans-serif", -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+/* Scroll bar style start =================== */
+
+.style-scroll-bar {
+  --scrollbar-color-thumb: var(--rx-slate6);
+  /* --scrollbar-color-thumb-hover: var(--rx-slate7); */
+  --scrollbar-color-track: var(--rx-slate3);
+  /* --scrollbar-color-track-hover: var(--rx-slate4); */
+  --scrollbar-width: thin;
+  --scrollbar-width-legacy: 12px;
+}
+
+/* Modern browsers with `scrollbar-*` support */
+@supports (scrollbar-width: auto) {
+  .style-scroll-bar {
+    scrollbar-color: var(--scrollbar-color-thumb) var(--scrollbar-color-track);
+    scrollbar-width: var(--scrollbar-width);
+  }
+}
+
+/* Legacy browsers with `::-webkit-scrollbar-*` support */
+@supports selector(::-webkit-scrollbar) {
+  .style-scroll-bar::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-color-thumb);
+  }
+  .style-scroll-bar::-webkit-scrollbar-track {
+    background: var(--scrollbar-color-track);
+  }
+  .style-scroll-bar::-webkit-scrollbar {
+    max-width: var(--scrollbar-width-legacy);
+    max-height: var(--scrollbar-width-legacy);
+  }
+}
+
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+
+/* Scroll bar style end=================== */
+
+.H1,
+.H2,
+.H3,
+.H4,
+.H5,
+.H6,
+.large-title,
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* SHADOWS =============================  */
+:root {
+  /* --shadow-1: 0px 2px 10px -4px  oklch(95% 0 256);
+  --shadow-2: 0px 8px 16px -8px  oklch(94% 0 256);
+  --shadow-3: 0px 12px 40px -6px  oklch(92% 0 256);
+  --shadow-4: 0px 20px 50px -6px  oklch(90% 0 256);
+  --shadow-5: 0px 30px 80px -2px oklch(88% 0 256);
+
+  --shadow-tinted-1: 0px 2px 10px -4px  oklch(95% 0.022 56.09);
+  --shadow-tinted-2: 0px 8px 16px -8px  oklch(93% 0.022 56.09);
+  --shadow-tinted-3: 0px 12px 20px -6px  oklch(91% 0.022 56.09);
+  --shadow-tinted-4: 0px 20px 50px -6px  oklch(89% 0.022 56.09);
+  --shadow-tinted-5: 0px 30px 80px -2px oklch(87% 0.022 56.09); */
+
+  --blured: 1;
+  --shadow-1: 0px 3px 5px -2px oklch(89% 0 256);
+  --shadow-2: 0px 14px 15px -8px oklch(98% 0 256);
+  --shadow-3: 0px 22px 35px -10px oklch(85% 0 256);
+  --shadow-4: 0px 36px 70px -18px oklch(84% 0 256);
+  --shadow-5: 0px 54px 90px -24px oklch(83% 0 256);
+
+  --blured: 1;
+  --shadow-tinted-1: 0px 3px 5px -2px oklch(89% 0.022 56.09);
+  --shadow-tinted-2: 0px 14px 15px -8px oklch(88% 0.022 56.09);
+  --shadow-tinted-3: 0px 22px 35px -10px oklch(85% 0.022 56.09);
+  --shadow-tinted-4: 0px 36px 70px -8px oklch(84% 0.022 56.09);
+  --shadow-tinted-5: 0px 54px 90px -24px oklch(83% 0.022 56.09);
+}
+
+/* END OF SHADOWS */
+
+input[type="text"] {
+  min-width: 0 !important;
+}
+
+label,
+input {
+  display: block;
+}
+
+p a,
+.in-text-link {
+  text-decoration-line: underline;
+  text-underline-offset: 0.15em;
+  /* text-decoration-thickness: 1px; */
+}
+
+
+/*  DEV helper classes ============================================ */
+
+.\?\?\? {
+  outline: 3px solid rgba(255, 0, 195, 0.237);
+  outline-offset: -1px;
+}
+
+
+.\?\?\?\? {
+  outline: 2px dashed rgba(0, 229, 255, 0.345);
+  outline-offset: -1px;
+}
+
+.\?\?\?\?\? {
+  outline: 2px dotted rgba(255, 251, 0, 0.237);
+  outline-offset: -1px;
+}
+
+.\?\?\?\?\?\? {
+  outline: 2px dotted rgba(0, 255, 4, 0.237);
+  outline-offset: -1px;
+}
+
+/* ============================================================ */
+
+/*  TipTap Classes
+============================================ */
+.tiptap.ProseMirror:focus {
+  outline: none;
+}
+/* Headings */
+.tiptap.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+
+.tiptap.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+
+.tiptap.ProseMirror h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 1em 0;
+}
+
+.tiptap.ProseMirror h4 {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.33em 0;
+}
+
+.tiptap.ProseMirror h5 {
+  font-size: 0.83em;
+  font-weight: bold;
+  margin: 1.67em 0;
+}
+
+.tiptap.ProseMirror h6 {
+  font-size: 0.67em;
+  font-weight: bold;
+  margin: 2.33em 0;
+}
+
+/* Lists */
+.tiptap.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 40px;
+}
+
+.tiptap.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 40px;
+}
+
+.tiptap.ProseMirror li {
+  margin-bottom: 0.5em;
+}
+
+/* Blockquote */
+.tiptap.ProseMirror blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 2px solid #ddd;
+}
+
+/* Code */
+.tiptap.ProseMirror pre {
+  padding: 1em;
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.tiptap.ProseMirror code {
+  font-family: monospace;
+}
+
+/* Links */
+.tiptap.ProseMirror a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.tiptap.ProseMirror a:hover {
+  text-decoration: underline;
+}
+
+/* Images */
+.tiptap.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+/* ============================================================ */
+
+
+.fade-x {
+  --jh-fade-x-margin: 2%;
+  --jh-fade-x-padding: 25%;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent var(--jh-fade-x-margin),
+    black var(--jh-fade-x-padding),
+    black calc(100% - var(--jh-fade-x-padding)),
+    transparent calc(100% - var(--jh-fade-x-margin))
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent var(--jh-fade-x-margin),
+    black var(--jh-fade-x-padding),
+    black calc(100% - var(--jh-fade-x-padding)),
+    transparent calc(100% - var(--jh-fade-x-margin))
+  );
+}
+:root {
+  --fade-to-opacity: 0;
+}
+.fade-to-b {
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 30%, rgba(0 0 0 / var(--fade-to-opacity)) 95%);
+  mask-image: linear-gradient(to bottom, black 0%, black 30%, rgba(0 0 0 / var(--fade-to-opacity)) 95%);
+  transition: --fade-to-opacity 1s ease;
+}
+
+@property --fade-to-opacity {
+  syntax: "<number>"; /* <- defined as type number for the transition to work */
+  initial-value: 0;
+  inherits: false;
+}
+
+@media (min-width: 1300px) {
+  .blog-section-fade-x {
+    --container-size: 120rem;
+    --fade-x-margin: 2%;
+    /* --fade-x-padding: calc((100vw - 72rem) /2); */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent var(--fade-x-margin),
+      black calc((var(--container-size) - 72rem) / 2),
+      black calc(var(--container-size) - (var(--container-size) - 72rem) / 2),
+      transparent calc(100% - var(--fade-x-margin))
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent var(--fade-x-margin),
+      black calc((var(--container-size) - 72rem) / 2),
+      black calc(var(--container-size) - calc((var(--container-size) - 72rem) / 2)),
+      transparent calc(100% - var(--fade-x-margin))
+    );
+  }
+}
+
+
+
+
