@@ -1,14 +1,10 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import EmailProvider from "next-auth/providers/nodemailer";
 
 import { db } from "~/server/db";
-import {
-  ACCOUNT,
-  SESSION,
-  USER,
-  VERIFICATION_TOKEN,
-} from "~/server/db/schema";
+import { ACCOUNT, SESSION, USER, VERIFICATION_TOKEN } from "~/server/db/schema";
 import { User } from "../db/user.schema";
 
 /**
@@ -23,7 +19,8 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
-    } & DefaultSession["user"] & User;
+    } & DefaultSession["user"] &
+      User;
   }
 
   // interface User {
@@ -39,6 +36,17 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+    }),
     DiscordProvider,
     /**
      * ...add more providers here.
@@ -55,13 +63,15 @@ export const authConfig = {
     accountsTable: ACCOUNT,
     sessionsTable: SESSION,
     verificationTokensTable: VERIFICATION_TOKEN,
-  }), callbacks: {
+  }),
+  callbacks: {
     session: ({ session, user }) => ({
       ...session,
       user: {
         ...session.user,
         id: user.id,
-      }, ACCOUNT
+      },
+      ACCOUNT,
     }),
   },
 } satisfies NextAuthConfig;
