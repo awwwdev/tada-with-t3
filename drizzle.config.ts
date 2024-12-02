@@ -8,5 +8,11 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["T3-Stack-Example_*"],
+  entities: {
+		roles: {
+			provider: "supabase",
+		},
+	},
+
+  // tablesFilter: ["T3-Stack-Example_*"],
 } satisfies Config;
