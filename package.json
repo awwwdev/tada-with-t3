@@ -4,20 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "build": "pnpm unocss:build && next build",
     "check": "next lint && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev": "next dev --turbo",
+    "dev": "concurrently \"pnpm unocss:dev\"  \"next dev\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "unocss:dev": "unocss -c uno.config.ts -o styles/uno.css --watch  \"./**/*.tsx\"  \"./**/*.md\" \"./lib/api.ts\" ",
+    "unocss:build": "unocss -c uno.config.ts -o styles/uno.css  \"./**/*.tsx\"  \"./**/*.md\" \"./lib/api.ts\" "
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.4",
@@ -27,6 +29,7 @@
     "@trpc/client": "11.0.0-rc.648",
     "@trpc/react-query": "11.0.0-rc.648",
     "@trpc/server": "11.0.0-rc.648",
+    "concurrently": "^9.1.0",
     "drizzle-kit": "^0.28.1",
     "drizzle-orm": "^0.36.4",
     "drizzle-zod": "^0.5.1",
@@ -39,6 +42,7 @@
     "react-dom": "^18.3.1",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
+    "unocss": "^0.65.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
