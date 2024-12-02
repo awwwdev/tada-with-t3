@@ -20,7 +20,7 @@ let cache: {
 };
 
 
-export const postRouter = createTRPCRouter({
+export const folderRouter = createTRPCRouter({
   getFolders: protectedProcedure
     .input(z.object({}))
     .use((opt) => opt.next())
@@ -71,7 +71,7 @@ export const postRouter = createTRPCRouter({
     return folder;
   }),
 
-  deleteFolder: protectedProcedure.input(folderCreateSchema).use(accessControl(
+  deleteFolder: protectedProcedure.input(folderUpdateSchema).use(accessControl(
     async (options, userAbility) => {
       const { id } = options.input
       const folder = await options.ctx.db.select().from(FOLDER).where(eq(FOLDER.id, id)).then(singleOrThrow);
@@ -82,4 +82,10 @@ export const postRouter = createTRPCRouter({
     if (!folder) throw new TRPCError({ code: "NOT_FOUND" });  
     return folder;
   }),
+
+
+  // addFolderToList
+  // removeFolderFromList
+  // reorderFolder
+
 });

@@ -44,7 +44,7 @@ const refinements = {
 }
 
 export const taskCreateSchema = createInsertSchema(TASK, refinements).omit({ id: true, createdAt: true, updatedAt: true }).strict();
-export const taskUpdateSchema = taskCreateSchema.partial();
+export const taskUpdateSchema = taskCreateSchema.partial().merge(z.object({id: z.string().uuid(), authorId: z.string().uuid()}));
 
 export type Task = typeof TASK.$inferSelect;
 export type NewTask = z.infer<typeof taskCreateSchema>;

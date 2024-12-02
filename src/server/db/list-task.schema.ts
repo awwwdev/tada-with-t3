@@ -33,10 +33,7 @@ export const listTaskCreateSchema = createInsertSchema(LIST_TASK, {
 })
   .omit({ id: true, createdAt: true, updatedAt: true })
   .strict();
-export const listTaskUpdateSchema = listTaskCreateSchema.omit({
-  listId: true,
-  taskId: true,
-}).partial();
+export const listTaskUpdateSchema = listTaskCreateSchema.partial().merge(z.object({ listId: z.string().uuid(), taskId: z.string().uuid() }));
 
 export type ListTask = typeof LIST_TASK.$inferSelect;
 export type NewListTask = z.infer<typeof listTaskCreateSchema>;
