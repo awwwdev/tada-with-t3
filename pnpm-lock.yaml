@@ -27,11 +27,11 @@ dependencies:
     specifier: 11.0.0-rc.648
     version: 11.0.0-rc.648(typescript@5.7.2)
   drizzle-orm:
-    specifier: ^0.33.0
-    version: 0.33.0(@types/react@18.3.12)(postgres@3.4.5)(react@18.3.1)
+    specifier: ^0.36.4
+    version: 0.36.4(@types/react@18.3.12)(postgres@3.4.5)(react@18.3.1)
   drizzle-zod:
     specifier: ^0.5.1
-    version: 0.5.1(drizzle-orm@0.33.0)(zod@3.23.8)
+    version: 0.5.1(drizzle-orm@0.36.4)(zod@3.23.8)
   geist:
     specifier: ^1.3.1
     version: 1.3.1(next@15.0.3)
@@ -1760,14 +1760,15 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.33.0(@types/react@18.3.12)(postgres@3.4.5)(react@18.3.1):
-    resolution: {integrity: sha512-SHy72R2Rdkz0LEq0PSG/IdvnT3nGiWuRk+2tXZQ90GVq/XQhpCzu/EFT3V2rox+w8MlkBQxifF8pCStNYnERfA==}
+  /drizzle-orm@0.36.4(@types/react@18.3.12)(postgres@3.4.5)(react@18.3.1):
+    resolution: {integrity: sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
-      '@electric-sql/pglite': '>=0.1.1'
-      '@libsql/client': '*'
-      '@neondatabase/serverless': '>=0.1'
+      '@electric-sql/pglite': '>=0.2.0'
+      '@libsql/client': '>=0.10.0'
+      '@libsql/client-wasm': '>=0.10.0'
+      '@neondatabase/serverless': '>=0.10.0'
       '@op-engineering/op-sqlite': '>=2'
       '@opentelemetry/api': ^1.4.1
       '@planetscale/database': '>=1'
@@ -1781,7 +1782,7 @@ packages:
       '@xata.io/client': '*'
       better-sqlite3: '>=7'
       bun-types: '*'
-      expo-sqlite: '>=13.2.0'
+      expo-sqlite: '>=14.0.0'
       knex: '*'
       kysely: '*'
       mysql2: '>=2'
@@ -1799,6 +1800,8 @@ packages:
       '@electric-sql/pglite':
         optional: true
       '@libsql/client':
+        optional: true
+      '@libsql/client-wasm':
         optional: true
       '@neondatabase/serverless':
         optional: true
@@ -1854,13 +1857,13 @@ packages:
       react: 18.3.1
     dev: false
 
-  /drizzle-zod@0.5.1(drizzle-orm@0.33.0)(zod@3.23.8):
+  /drizzle-zod@0.5.1(drizzle-orm@0.36.4)(zod@3.23.8):
     resolution: {integrity: sha512-C/8bvzUH/zSnVfwdSibOgFjLhtDtbKYmkbPbUCq46QZyZCH6kODIMSOgZ8R7rVjoI+tCj3k06MRJMDqsIeoS4A==}
     peerDependencies:
       drizzle-orm: '>=0.23.13'
       zod: '*'
     dependencies:
-      drizzle-orm: 0.33.0(@types/react@18.3.12)(postgres@3.4.5)(react@18.3.1)
+      drizzle-orm: 0.36.4(@types/react@18.3.12)(postgres@3.4.5)(react@18.3.1)
       zod: 3.23.8
     dev: false
 

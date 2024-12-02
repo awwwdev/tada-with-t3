@@ -4,6 +4,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   decimal,
+  pgPolicy,
   pgTable,
   text,
   timestamp,
@@ -26,15 +27,15 @@ export const FOLDER = pgTable(
     show: boolean("show"),
     orderInPanel: decimal("order_in_panel").default("0"),
   },
-  (t) => ({
-    policy: pgPolicy("owner-has-full-access", {
+  (t) => ([
+     pgPolicy("owner-has-full-access", {
       as: "permissive",
       to: supabaseRoles.authenticatedRole,
       for: "all",
       using: sql`(select auth.uid()) = author_id`,
       // withCheck: sql`TRUE`,
-    }),
-  }),
+    })
+  ]),
 );
 
 const refinements = {

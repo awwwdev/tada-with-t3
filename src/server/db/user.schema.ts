@@ -40,8 +40,8 @@ export const USER = pgTable(
     settings: json("settings")
       .$type<Settings>()
       .default({ theme: "system", showCompletedTasks: true, startOfWeek: "sunday" }),
-  }, (table) => ({
-    fk: foreignKey({
+  }, (table) => ([
+    foreignKey({
       columns: [table.id],
       // reference to the auth table from Supabase
       foreignColumns: [AUTH_USER.id],
@@ -49,7 +49,7 @@ export const USER = pgTable(
     })
       .onDelete("cascade")
       .onUpdate("cascade")
-  })
+  ])
 );
 
 export const USER_VIEW = pgView("user_view").as((qb) => qb.select({

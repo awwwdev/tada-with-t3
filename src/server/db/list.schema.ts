@@ -59,15 +59,16 @@ export const LIST = pgTable(
     theme: json("theme").$type<ListTheme>().default({}),
     // orderOfTasks: uuid('order_of_tasks').references(() => TASK.id).array().notNull(),
   },
-  (t) => ({
-    policy: pgPolicy("owner-has-full-access", {
+  (t) => ([
+    pgPolicy("owner-has-full-access", {
       as: "permissive",
       to: supabaseRoles.authenticatedRole,
       for: "all",
       using: sql`(select auth.uid()) = author_id`,
       // withCheck: sql`TRUE`,
-    }),
-  }),
+    })
+  ]),
+
 );
 
 const refinements = {
@@ -80,7 +81,7 @@ const refinements = {
 
 
 export const listCreateSchema = createInsertSchema(LIST, refinements).omit({ id: true, createdAt: true, updatedAt: true }).strict();
-export const listUpdateSchema = listCreateSchema.partial().merge(z.object({id: z.string().uuid(), authorId: z.string().uuid()}));
+export const listUpdateSchema = listCreateSchema.partial().merge(z.object({ id: z.string().uuid(), authorId: z.string().uuid() }));
 
 export type List = typeof LIST.$inferSelect;
 export type NewList = z.infer<typeof listCreateSchema>;
