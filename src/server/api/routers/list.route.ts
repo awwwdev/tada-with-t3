@@ -2,10 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { subject } from "@casl/ability";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { LIST, LIST_TASK } from "~/server/db/schema";
 import {
   listCreateSchema,
@@ -156,21 +153,31 @@ export const listRouter = createTRPCRouter({
     .use(
       accessControl(async ({ ctx, input }, userAbility) => {
         const listId = input.listId;
-        const list = await ctx.db
-          .select()
-          .from(LIST)
-          .where(eq(LIST.id, listId))
-          .then(singleOrThrow);
-        return userAbility.can("add_task_to_list", subject("List", list));
+        const listWithTasks = await getListWithTasks(listId, ctx.db);
+        cache.listWithTasks = listWithTasks;
+        return userAbility.can(
+          "add_task_to_list",
+          subject("List", listWithTasks),
+        );
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const cachedListWithTasks = cache.listWithTasks!;
+      const maxOrderInList = String(
+        1 +
+          Math.max(
+            ...cachedListWithTasks.tasks.map((listTask) =>
+              Number(listTask.orderInList),
+            ),
+          ),
+      );
+
       const listWithTasks = await ctx.db.transaction(async (tx) => {
-      const listTask = await ctx.db
-        .insert(LIST_TASK)
-        .values(input)
-        .returning()
-        .then(singleOrThrow);
+        const listTask = await ctx.db
+          .insert(LIST_TASK)
+          .values({ ...input, orderInList: maxOrderInList })
+          .returning()
+          .then(singleOrThrow);
         const _listWithTasks = await getListWithTasks(input.listId, tx);
         return _listWithTasks;
       });
@@ -182,17 +189,7 @@ export const listRouter = createTRPCRouter({
     .use(
       accessControl(async ({ ctx, input }, userAbility) => {
         const listId = input.listId;
-        const listWithTasks = await ctx.db.query.LIST.findFirst({
-          where: eq(LIST.id, listId),
-          with: {
-            author: true,
-            tasks: {
-              with: {
-                task: true,
-              },
-            },
-          },
-        }).then(singleOrThrow);
+        const listWithTasks = await getListWithTasks(listId, ctx.db);
         cache.listWithTasks = listWithTasks;
         return (
           userAbility.can("add_task_to_list", subject("List", listWithTasks)) &&
@@ -220,7 +217,7 @@ export const listRouter = createTRPCRouter({
         await tx
           .insert(LIST_TASK)
           .values({
-            listId: input.listId,
+            ...input,
             taskId: createdTask.id,
             orderInList: maxOrderInList,
           })
