@@ -1,4 +1,5 @@
 export { FOLDER } from "./folder.schema";
+export { FOLDER_LIST } from "./folder-list.schema";
 export { LIST } from "./list.schema";
 export { LIST_TASK } from "./list-task.schema";
 export { SMART_LIST_TASK, SmartListIdEnum } from "./smart-list-task.schema";
