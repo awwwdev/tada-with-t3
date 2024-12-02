@@ -3,8 +3,7 @@
 import { useState } from "react";
 
 import { api } from "~/trpc/react";
-import { signIn } from "next-auth/react"
-
+import { signIn } from "next-auth/react";
 
 export function LatestPost() {
   const [latestPost] = api.post.getLatest.useSuspenseQuery();
@@ -20,7 +19,7 @@ export function LatestPost() {
 
   return (
     <div className="w-full max-w-xs">
-      <button onClick={() => signIn("email", {redirect: false, email: "", password: ""})}>Sign out</button>
+      <button onClick={() => signIn("email", { redirect: false, email: "", password: "" })}>Sign out</button>
       {latestPost ? (
         <p className="truncate">Your most recent post: {latestPost.name}</p>
       ) : (
