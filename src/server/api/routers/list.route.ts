@@ -110,7 +110,6 @@ export const listRouter = createTRPCRouter({
           .where(eq(LIST.id, input.id))
           .returning()
           .then(singleOrThrow);
-        if (!_updatedList) throw new TRPCError({ code: "NOT_FOUND" });
         const listWithTasks = await getListWithTasks(input.id, tx);
         return listWithTasks;
       });
@@ -141,7 +140,6 @@ export const listRouter = createTRPCRouter({
           .where(eq(LIST.id, input.id))
           .returning()
           .then(singleOrThrow);
-        if (!_deletedList) throw new TRPCError({ code: "NOT_FOUND" });
         return _deletedList;
       });
       return deletedList;

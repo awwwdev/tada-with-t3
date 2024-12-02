@@ -14,17 +14,11 @@ export const accessControl = <T>(
   return async (option: T) => {
     const opt = option as Option;
     const user = opt.ctx.session?.user;
-    if (!user) throw new TRPCError({ code: "UNAUTHORIZED" });
+    if (!user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Please sign in to access." });
     const ability = defineAbilitiesFor(user);
     let hasAccess;
-    try {
-      hasAccess = await callback(option, ability);
-    } catch (error) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    if (!hasAccess) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
+    hasAccess = await callback(option, ability);
+    if (!hasAccess) throw new TRPCError({ code: "UNAUTHORIZED", message: "You don't have access to this." });
     return opt.next();
   };
 };

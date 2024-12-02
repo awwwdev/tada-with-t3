@@ -116,7 +116,6 @@ export const folderRouter = createTRPCRouter({
           .where(eq(FOLDER.id, input.id))
           .returning()
           .then(singleOrThrow);
-        if (!_updatedFolder) throw new TRPCError({ code: "NOT_FOUND" });
         const folderWithLists = await getFolderWithLists(input.id, tx);
         return folderWithLists;
       });
@@ -147,7 +146,6 @@ export const folderRouter = createTRPCRouter({
           .where(eq(FOLDER.id, input.id))
           .returning()
           .then(singleOrThrow);
-        if (!_deletedFolder) throw new TRPCError({ code: "NOT_FOUND" });
         return _deletedFolder;
       });
       return deletedFolder;
